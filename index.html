@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>D3js New York</title>
+
+    <!-- bulma css-->
+    <link rel="stylesheet"  type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.3.2/css/bulma.min.css">
+
+    <!-- CSS stylesheet -->
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+
+    <!-- D3.js CDN source -->
+    <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+     <script src="//d3js.org/d3.geo.projection.v0.min.js"></script>
+    <script src="//d3projection.js"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="data/CaliforniaCounties.json"></script>
+    <script src="data/Chitown.json"></script>
+  
+  
+
+  </head>
+  <body>
+    <h1 class="title" style = "font-family:optima">Total Crime Incidents in Chicago, 2017 </h1>
+  <h2></h2>
+    <h5></h5>
+    <div class="col-xs-6 column map">
+    <div id="legendContainer">
+    <svg width="70" height="80">
+    <circle cx="25" cy="15" r="10" fill="red" opacity= ".6" />
+    <circle cx="25" cy="70" r="6" fill="#ff6f00" opacity= ".6"/>
+    <div class="legendText" style="font-size:14px; color: #003366; font-family:optima; position:absolute; left:50px; top:0px">Homicides, by Month</div>
+    <div class="legendText2" style="font-size:14px; color: #003366; font-family:optima; position:absolute; left:50px; top:55px">All 2017 Homicides</div>
+    <div class="bodyText" style="font-size:14px; color: #003366; font-family:optima; position:absolute; left:25px; top:240px">2017 was an interesting year for Chicago.  2016 had been the deadliest year in two decades, logging 771 murders.  In response, Chicago added police officers to the street and invested in new technology to respond to crime.<br><br> Though Chicago saw a 16% decline in murders compared to the previous year, the city still saw 650 murders in 2017, mostly on the city's south and west sides. Scroll through time to see homicides by month or click on the map to get information about each homicide in 2017.<br><br> Source: Chicago data portal, available <a href="https://data.cityofchicago.org/">here</a>.</div>
+    </svg>
+    </div>
+  <div id="sliderContainer">
+        <input id="timeslide" type="range" min="0" max="11" value="0" step="1" /><br>
+        <span id="range" style="font-family:optima"; >January</span>
+    </div>
+    <div class="waterLabels" style="font-size:14px; color: #003366; font-family:optima; position:absolute; left:640px; top:340px"><i>Lake Michigan<i></div>
+    <div id="CounterContainer">
+        <span id="count">January: 55 homicides <br> YTD: 55 homicides</span> 
+
+    </div>
+
+
+        <!-- Your D3 code for ny maps -->
+        
+
+        <!-- Info -->
+        <p class="subtitle is-5 has-text-centered">Created by: Venkata Karthik Thota</p>
+    </div>
+
+    <script>
+
+var width = 700;
+  var height = 880;
+
+  var mapContainer = d3.select("body")
+        .append("mapContainer")
+        .attr( "width", 900 )
+        .attr ( "height", 900 )
+        
+
+        
+    var Map = mapContainer.append(svg)
+  var svg = d3.select("body")
+    .append("svg")
+    .attr( "width", width )
+    .attr ( "height", height )
+        .attr ("position", 'left')
+        .attr("transform","translate(100,-150)")
+        .attr("class", "map")
+    var g = svg.append ( "g" )
+
+        
+        
+
+        // svg repositioning
+        //$("svg").css({top: 100, left: 100});
+
+  //projection
+  var albersProjection = d3.geoAlbers()
+    .scale( 10000)
+    .rotate ( [119.6298,0] )
+    .center( [0, 38.9781] )
+
+    function zoomed() {
+    g.attr("transform", d3.event.transform);//The zoom and panning is affecting my G element which is a child of SVG
+}
+
+
+    
+    var zoom = d3.zoom()
+        .scaleExtent([1, 21])
+        .on("zoom", zoomed);
+    
+   /*
+   var dragcontainer = d3.drag()
+  .on("drag", function(d, i) {
+    d3.select(this).attr("transform", "translate(" + (d.x = d3.event.x) + "," + (d.y = d3.event.y) + ")");
+  });
+var drag = d3.select("svg").datum({x: 0, y: 0}).call(dragcontainer)
+*/
+  //GeoPath
+  var geoPath = d3.geoPath()
+    .projection( albersProjection );
+
+  g.selectAll( "path" )
+    .data( CaliforniaCounties.features )
+    .enter()
+    .append( "path" )
+    .attr( "stroke", "white" )
+        .attr( "border-radius", '50%' )
+        .attr( "stroke-width", ".5" )
+    .attr( "fill", "#black" )
+        .attr( "opacity", ".2" )
+    .attr( "d", geoPath )
+        .attr("class","communities")
+
+    </script>
+  </body>
+</html>
